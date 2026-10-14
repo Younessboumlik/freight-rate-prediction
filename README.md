@@ -65,7 +65,7 @@ streamlit run app.py
 
 ## Method
 
-- **Validation follows time.** Sep-Oct is held out and used once. On Jan-Aug, cross-validation uses two-month windows moving forward, each trained on the six months before it. Anything learned from data (medians, fitted models) is fitted on the training fold only.
+- **Validation follows time.** Sep-Oct is held out and used once. On Jan-Aug, cross-validation uses two-month windows moving forward, each trained on all the earlier data (two, four and six months for the three folds). Anything learned from data (medians, fitted models) is fitted on the training fold only.
 - **Metric.** MAE. About 1.4% of the prices are random outliers that cannot be predicted from the available columns, and they dominate RMSE.
 - **Features.** Coordinates, distance, weight, equipment and `market_index`. Negative weights are made positive and missing values are filled with the training median (or the median of the same day for `market_index`). `quote_signal` is removed because its relation with the price changes sign from month to month.
 - **Model.** CatBoost with an l1 loss, trained on the rate per mile and converted back to a price. Hyperparameters come from a two-stage random search on the time-ordered folds. The final model is retrained on all labelled data (Jan-Oct) before predicting `validation.csv`.
