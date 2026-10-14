@@ -25,6 +25,7 @@ The test error is higher than the CV error because the price level in Sep-Oct mo
 | `december_predictions.csv` | predictions for the fixed December route |
 | `scorer_results/candidate_december.png` | December chart produced by `score.py` |
 | `freight_rate_model.joblib` | final fitted pipeline |
+| `app.py` | Streamlit app that predicts a rate for one load or for a CSV file |
 
 ## Run
 
@@ -37,7 +38,7 @@ jupyter lab Project.ipynb
 
 Run all cells from top to bottom. The provided data files and `score.py` must be in the same folder as the notebook. Seeds are fixed, so a second run gives the same results.
 
-The hyperparameter search takes about 30 minutes, the rest a few minutes. To run without opening Jupyter:
+The hyperparameter search takes about 35 minutes, the rest a few minutes. To run without opening Jupyter:
 
 ```bash
 jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 Project.ipynb
@@ -48,6 +49,19 @@ The last cells call the scorer:
 ```bash
 python score.py --predictions validation_predictions.csv --december-predictions december_predictions.csv
 ```
+
+## Streamlit app
+
+The app uses the saved model, so run the notebook first (or keep `freight_rate_model.joblib` from the repository).
+
+```bash
+streamlit run app.py
+```
+
+- **One load:** choose the pickup and delivery cities, distance, weight, equipment, date and `market_index`. The coordinates of the cities are read from `train-test.csv`, so only the cities of the training data are listed.
+- **CSV file:** upload a file with the columns `pickup_lat`, `pickup_lon`, `delivery_lat`, `delivery_lon`, `distance`, `weight`, `market_index`, `equipment` and `date`. `validation.csv` works as is. The predictions can be downloaded.
+
+`app.py` repeats the few classes defined in the notebook (`cleaning`, `add_feats`, `MyStatefulTransformer`, `RpmTarget`), because the saved model refers to them by name. If they change in the notebook, they must change in `app.py` and the model must be exported again.
 
 ## Method
 

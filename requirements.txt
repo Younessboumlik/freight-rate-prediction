@@ -9,3 +9,4 @@ seaborn>=0.13,<1
 scipy>=1.11,<2
 ipython>=8
 jupyter
+streamlit>=1.30,<2
